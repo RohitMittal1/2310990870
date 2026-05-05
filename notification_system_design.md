@@ -177,3 +177,44 @@ Adding indexes on every column is NOT good because:
 
 * Increases storage
 * Slows down write operations
+
+
+
+
+
+#STAGE 4
+# Stage 4 - Performance Improvement
+
+## 1. Problem
+
+Notifications are fetched from the database on every request, which increases load and slows down the system.
+
+---
+
+## 2. Solutions
+
+### a) Caching
+
+Use Redis to store frequently accessed notifications and reduce database calls.
+
+### b) Pagination
+
+Fetch limited data per request using limit and page parameters.
+
+### c) Lazy Loading
+
+Load notifications only when needed instead of all at once.
+
+### d) Rate Limiting
+
+Restrict too many API requests from a single user.
+
+---
+
+## 3. Trade-offs
+
+* Caching improves speed but may return slightly outdated data.
+* Pagination reduces load but requires multiple requests.
+
+
+
