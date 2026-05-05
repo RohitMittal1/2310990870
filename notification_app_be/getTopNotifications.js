@@ -3,7 +3,7 @@ const axios = require("axios");
 const Log = require("./logging_middleware/log");
 
 // ✅ ADD TOKEN HERE (copy from log.js)
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJyb2hpdDA4NzAuYmUyM0BjaGl0a2FyYS5lZHUuaW4iLCJleHAiOjE3Nzc5NjM4NTQsImlhdCI6MTc3Nzk2Mjk1NCwiaXNzIjoiQWZmb3JkIE1lZGljYWwgVGVjaG5vbG9naWVzIFByaXZhdGUgTGltaXRlZCIsImp0aSI6ImEwYWExMmJhLWI1ZTEtNDM4Ni04YmQ5LWQyZjQwMzc2ZWI4MCIsImxvY2FsZSI6ImVuLUlOIiwibmFtZSI6InJvaGl0IG1pdHRhbCIsInN1YiI6IjAyODk4OTMyLTBjZDEtNDBmNC04ZmYxLTUxYTRjNTg2MzI0ZiJ9LCJlbWFpbCI6InJvaGl0MDg3MC5iZTIzQGNoaXRrYXJhLmVkdS5pbiIsIm5hbWUiOiJyb2hpdCBtaXR0YWwiLCJyb2xsTm8iOiIyMzEwOTkwODcwIiwiYWNjZXNzQ29kZSI6IkVYZnZEcCIsImNsaWVudElEIjoiMDI4OTg5MzItMGNkMS00MGY0LThmZjEtNTFhNGM1ODYzMjRmIiwiY2xpZW50U2VjcmV0IjoieFpzREFDQ0Z5eUZmV2ZrQyJ9.kRreJKHEc18b7neKKP5zZC3UcGC8u8QBnAaDJWtC2Xc";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJyb2hpdDA4NzAuYmUyM0BjaGl0a2FyYS5lZHUuaW4iLCJleHAiOjE3Nzc5NjUyODcsImlhdCI6MTc3Nzk2NDM4NywiaXNzIjoiQWZmb3JkIE1lZGljYWwgVGVjaG5vbG9naWVzIFByaXZhdGUgTGltaXRlZCIsImp0aSI6ImZmOWE0MzkwLWIwMmYtNDY3Zi1iYmFmLTJhNzhmZDJjM2EzZiIsImxvY2FsZSI6ImVuLUlOIiwibmFtZSI6InJvaGl0IG1pdHRhbCIsInN1YiI6IjAyODk4OTMyLTBjZDEtNDBmNC04ZmYxLTUxYTRjNTg2MzI0ZiJ9LCJlbWFpbCI6InJvaGl0MDg3MC5iZTIzQGNoaXRrYXJhLmVkdS5pbiIsIm5hbWUiOiJyb2hpdCBtaXR0YWwiLCJyb2xsTm8iOiIyMzEwOTkwODcwIiwiYWNjZXNzQ29kZSI6IkVYZnZEcCIsImNsaWVudElEIjoiMDI4OTg5MzItMGNkMS00MGY0LThmZjEtNTFhNGM1ODYzMjRmIiwiY2xpZW50U2VjcmV0IjoieFpzREFDQ0Z5eUZmV2ZrQyJ9.dzEL8vtY2iGElqfiD5N6hjCoxleAF9o0anp5eKv_QJQ";
 
 // Priority mapping
 const priorityMap = {
@@ -19,25 +19,30 @@ async function getTopNotifications() {
 
     // ✅ FIX 1: Add Authorization header
     const response = await axios.get(
-      "http://20.207.122.201/evaluation-service/notifications",
-      {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
-      }
-    );
+  "http://20.207.122.201/evaluation-service/notifications?limit=100&page=1",
+  {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+    },
+  }
+);
 
-    let notifications = response.data.notifications;
+    let notifications = response.data.map((n) => ({
+  id: n.ID,
+  type: n.Type,
+  message: n.Message,
+  timestamp: n.Timestamp,
+}));
 
     // ✅ FIX 2: Correct field names (Type, Timestamp)
     notifications.sort((a, b) => {
-      const priorityDiff =
-        priorityMap[b.Type] - priorityMap[a.Type];
+  const priorityDiff =
+    priorityMap[b.type] - priorityMap[a.type];
 
-      if (priorityDiff !== 0) return priorityDiff;
+  if (priorityDiff !== 0) return priorityDiff;
 
-      return new Date(b.Timestamp) - new Date(a.Timestamp);
-    });
+  return new Date(b.timestamp) - new Date(a.timestamp);
+});
 
     // Take top 10
     const top10 = notifications.slice(0, 10);
