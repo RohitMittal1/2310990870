@@ -123,3 +123,57 @@ Notification:
 ```js
 db.notifications.find({ studentId: 1042 })
 ```
+
+
+
+#STAGE 3
+# Stage 3 - Query Optimization
+
+## 1. Given Problem
+
+The query:
+SELECT * FROM notifications
+WHERE studentId = 1042 AND isRead = false
+ORDER BY createdAt ASC;
+
+---
+
+## 2. Issues
+
+* Using SELECT * fetches unnecessary data
+* No indexing → slow performance
+* Large dataset (millions of records)
+
+---
+
+## 3. Solution
+
+### a) Use Specific Columns
+
+Fetch only required fields instead of *
+
+### b) Add Indexes
+
+Create indexes on:
+
+* studentId
+* isRead
+* createdAt
+
+---
+
+## 4. Improved Query
+
+SELECT id, message, createdAt
+FROM notifications
+WHERE studentId = 1042 AND isRead = false
+ORDER BY createdAt ASC;
+
+---
+
+## 5. Important Note
+
+Adding indexes on every column is NOT good because:
+
+* Increases storage
+* Slows down write operations
