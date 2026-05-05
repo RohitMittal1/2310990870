@@ -71,3 +71,55 @@ Content-Type: application/json
 ## 6. Real-time Notifications
 
 We will use WebSockets (Socket.io) to send notifications in real-time.
+
+
+
+
+
+#STAGE 2
+# Stage 2 - Database Design
+
+## 1. Database Choice
+
+We will use MongoDB (NoSQL database) because:
+
+* Flexible schema
+* Easy to scale
+* Fast for read/write operations
+
+---
+
+## 2. Schema Design
+
+Notification:
+
+* id
+* studentId
+* type (Event, Result, Placement)
+* message
+* timestamp
+* isRead
+
+---
+
+## 3. Problems with Large Data
+
+* Database size increases
+* Queries become slow
+* High load on server
+
+---
+
+## 4. Solutions
+
+* Use indexing on important fields (studentId, type)
+* Use pagination (limit data per request)
+* Use sharding for scaling
+
+---
+
+## 5. Sample Query
+
+```js
+db.notifications.find({ studentId: 1042 })
+```
