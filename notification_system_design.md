@@ -218,3 +218,51 @@ Restrict too many API requests from a single user.
 
 
 
+#STAGE 5
+# Stage 5 - Scaling Notification System
+
+## 1. Problem
+
+Sending notifications to 50,000 students using a single API request can:
+
+* Overload the server
+* Cause delays
+* Fail partially if an error occurs
+
+---
+
+## 2. Solution
+
+### a) Use Queue System
+
+Use message queues like RabbitMQ or Kafka to handle large-scale processing.
+
+---
+
+## 3. Improved Flow
+
+1. API receives request
+2. Notifications are added to a queue
+3. Worker services process the queue
+4. Notifications are sent asynchronously
+
+---
+
+## 4. Benefits
+
+* Faster response time
+* Better scalability
+* Reliable processing (retry on failure)
+
+---
+
+## 5. Additional Improvements
+
+* Bulk processing
+* Retry mechanism for failed jobs
+* Parallel workers for faster execution
+
+
+
+
+
